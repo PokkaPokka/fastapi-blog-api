@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 
 from .. import models, schemas, oauth2
 from ..database import get_db
@@ -28,18 +28,24 @@ def create_post(post: schemas.PostCreate, db: Session = Depends(get_db), current
 #################### Read ####################
 # Retrive all posts
 @router.get("/", response_model = List[schemas.PostResponse])
-def get_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def get_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), 
+              limit: int = 10, skip: int = 0, search: Optional[str] = ""):
     # cursor.execute("""SELECT * FROM posts""")
     # posts = cursor.fetchall()
-    posts = db.query(models.Post).all()
+    posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
+    if not posts:
+        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "No posts found.")
     return posts
 
 # Retrive all posts from the current user
 @router.get("/current_user", response_model = List[schemas.PostResponse])
-def get_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def get_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), 
+              limit: int = 10, skip: int = 0, search: Optional[str] = ""):
     # cursor.execute("""SELECT * FROM posts""")
     # posts = cursor.fetchall()
-    posts = db.query(models.Post).filter(models.Post.owner_id == current_user.id).all()
+    posts = db.query(models.Post).filter(models.Post.owner_id == current_user.id).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
+    if not posts:
+        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "No posts found.")
     return posts
 
 # Retrive a post from an id

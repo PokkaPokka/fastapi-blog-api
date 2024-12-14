@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-
+    
 URL = os.getenv("SQLALCHEMY_DATABASE_URL")
 if URL is None:
     raise ValueError("No SQLALCHEMY_DATABASE_URL found in environment variables")
