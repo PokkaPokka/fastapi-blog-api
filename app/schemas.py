@@ -1,6 +1,8 @@
 from typing import Optional
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field, conint
 from datetime import datetime
+
+#################### USER ####################
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -17,6 +19,9 @@ class UserResponse(BaseModel):
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+
+#################### POST ####################
 
 class PostBase(BaseModel):
     title: str
@@ -36,6 +41,23 @@ class PostResponse(PostBase):
 
     class Config:
         from_attributes = True
+
+#################### VOTE ####################
+
+class VoteBase(BaseModel):
+    post_id: int
+    # 1 for upvote, 0 for remove vote
+    dir: int = Field(..., le=1, ge=0)
+
+class VoteResponse(BaseModel):
+    user_id: int
+    post_id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+#################### TOKEN ###################
 
 class Token(BaseModel):
     access_token: str
