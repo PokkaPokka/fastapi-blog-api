@@ -104,7 +104,7 @@ def get_post_by_id(
     return post
 
 
-# Retrive a post from an id of the current user
+# Retrive a current user's post from an id
 @router.get("/current_user/{id}", response_model=schemas.PostVoteResponse)
 def get_post_by_id_current_user(
     id: int,
