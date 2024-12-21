@@ -6,7 +6,7 @@ import os
 
 load_dotenv()
 
-URL = os.getenv("DATABASE_URL")
+URL = f'postgresql://{os.getenv("DB_USER")}:{os.getenv("DB_PASSWORD")}@{os.getenv("DB_HOST")}/{os.getenv("DB_NAME")}'
 if URL is None:
     raise ValueError("No DATABASE_URL found in environment variables")
 
