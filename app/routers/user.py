@@ -17,6 +17,11 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     user.password = utils.hash(user.password)
 
     new_user = models.User(**user.dict())
+    if db.query(models.User).filter(models.User.email == new_user.email).first():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"user with email: {new_user.email} already exists.",
+        )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

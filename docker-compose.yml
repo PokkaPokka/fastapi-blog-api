@@ -1,0 +1,29 @@
+version: "3"
+services:
+  api:
+    build: .
+    depends_on:
+      - postgres
+    ports:
+      - 8000:8000
+    environment:
+      - DB_HOST=postgres
+      - DB_NAME=fastapi
+      - DB_USER=postgres
+      - DB_PASSWORD=Postgres,986563625
+      - OAUTH_SECRET_KEY=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
+      - TOKEN_EXPIRE_MINUTES=60
+      - ALGORITHM=HS256
+    working_dir: /user/src/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: Postgres,986563625
+      POSTGRES_DB: fastapi
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+
+volumes:
+  postgres-db:
