@@ -6,6 +6,8 @@ services:
       - postgres
     ports:
       - 8000:8000
+    volumes:
+      - .:/user/src/app:ro
     environment:
       - DB_HOST=postgres
       - DB_NAME=fastapi

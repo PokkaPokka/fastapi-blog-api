@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, EmailStr, Field, conint
+from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 
 #################### USER ####################

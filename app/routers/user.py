@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+import re
 
 from .. import models, schemas, utils
 from ..database import get_db
@@ -13,14 +14,21 @@ router = APIRouter(prefix="/users", tags=["Users"])
     "/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse
 )
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    # hash the password
-    user.password = utils.hash(user.password)
+    # validate the password
+    if not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$", user.password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number",
+        )
+    else:
+        # hash the password
+        user.password = utils.hash(user.password)
 
     new_user = models.User(**user.dict())
     if db.query(models.User).filter(models.User.email == new_user.email).first():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"user with email: {new_user.email} already exists.",
+            detail=f"User with email: {new_user.email} already exists.",
         )
     db.add(new_user)
     db.commit()

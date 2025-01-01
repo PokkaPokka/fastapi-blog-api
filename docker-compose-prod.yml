@@ -1,0 +1,29 @@
+version: "3"
+services:
+  api:
+    image: 986563625/api-dev
+    depends_on:
+      - postgres
+    ports:
+      - 80:8000
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - OAUTH_SECRET_KEY=${OAUTH_SECRET_KEY}
+      - TOKEN_EXPIRE_MINUTES=${TOKEN_EXPIRE_MINUTES}
+      - ALGORITHM=${ALGORITHM}
+    working_dir: /user/src/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+
+volumes:
+  postgres-db:
