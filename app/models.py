@@ -16,7 +16,7 @@ class Post(Base):
         Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
 
-    owner = relationship("User")  # The User here refferes to the class User below
+    owner = relationship("User")  # The User here referes to the class User below
 
 
 class User(Base):
@@ -24,6 +24,8 @@ class User(Base):
     id = Column(Integer, primary_key=True, nullable=False, index=True)
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
+    first_name = Column(String(32), nullable=True)
+    last_name = Column(String(64), nullable=True)
     created_at = Column(
         TIMESTAMP(timezone=True), server_default=text("NOW()"), nullable=False
     )
@@ -37,6 +39,21 @@ class Vote(Base):
     post_id = Column(
         Integer, ForeignKey("posts.id", ondelete="CASCADE"), primary_key=True
     )
+    created_at = Column(
+        TIMESTAMP(timezone=True), server_default=text("NOW()"), nullable=False
+    )
+
+
+class Comment(Base):
+    __tablename__ = "comments"
+    id = Column(Integer, primary_key=True, nullable=False, index=True)
+    user_id = Column(
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+    post_id = Column(
+        Integer, ForeignKey("posts.id", ondelete="CASCADE"), nullable=False
+    )
+    content = Column(String, nullable=False)
     created_at = Column(
         TIMESTAMP(timezone=True), server_default=text("NOW()"), nullable=False
     )

@@ -46,3 +46,19 @@ def get_user_by_id(id: int, db: Session = Depends(get_db)):
             detail=f"user with id: {id} cannot be found.",
         )
     return user
+
+
+#################### Update ####################
+@router.put("/{id}", response_model=schemas.UserResponse)
+def update_user(id: int, user: schemas.UserUpdate, db: Session = Depends(get_db)):
+    user_query = db.query(models.User).filter(models.User.id == id)
+    user_db = user_query.first()
+    if not user_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"user with id: {id} cannot be found.",
+        )
+
+    user_query.update(user.dict(exclude_unset=True), synchronize_session=False)
+    db.commit()
+    return user_db
