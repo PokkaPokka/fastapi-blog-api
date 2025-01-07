@@ -6,6 +6,15 @@ on:
   pull_request:
     branches: ["main"]
 
+env:
+  DB_HOST: localhost
+  DB_NAME: fastapi
+  DB_USER: postgres
+  DB_PASSWORD: Postgres,986563625
+  OAUTH_SECRET_KEY: 09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
+  TOKEN_EXPIRE_MINUTES: 60
+  ALGORITHM: HS256
+
 jobs:
   job1:
     runs-on: ubuntu-latest
@@ -21,6 +30,4 @@ jobs:
       - name: install dependencies
         run: pip install -r requirements.txt
       - name: run tests
-        run: |
-          pip install pytest
-          pytest
+        run: pytest
