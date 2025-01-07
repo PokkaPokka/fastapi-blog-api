@@ -6,17 +6,18 @@ on:
   pull_request:
     branches: ["main"]
 
-env:
-  DB_HOST: localhost
-  DB_NAME: fastapi
-  DB_USER: postgres
-  DB_PASSWORD: Postgres,986563625
-  OAUTH_SECRET_KEY: 09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
-  TOKEN_EXPIRE_MINUTES: 60
-  ALGORITHM: HS256
-
 jobs:
   job1:
+    environment:
+      name: testing
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      OAUTH_SECRET_KEY: ${{ secrets.OAUTH_SECRET_KEY }}
+      TOKEN_EXPIRE_MINUTES: ${{ secrets.TOKEN_EXPIRE_MINUTES }}
+      ALGORITHM: ${{ secrets.ALGORITHM }}
     runs-on: ubuntu-latest
     steps:
       - name: pulling git repo
